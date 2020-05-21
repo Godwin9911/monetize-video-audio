@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monetize Audio and Video</title>
+</head>
+<body>
+  <main>
+    <p id="state"></p>
+    <video class="mediaEl" src="files/videoplayback.mp4" controls></video>
+    <br>
+    <audio class="mediaEl" src="files/videoplayback.mp4" controls></audio>
+  </main>
+  <script>
+    (function(){
+      if (!document.monetization) {
+        const state = document.getElementById('state')
+        state.innerText = 'monetization not enabled in browser';
+        state.style.color = 'red';
+      }
+
+      function showMonetizationState() {
+        document.getElementById('state').innerText = document.monetization.state;
+      }
+
+      if (document.monetization) {
+        document.monetization.addEventListener(
+          "monetizationstop",
+          showMonetizationState
+        );
+        document.monetization.addEventListener(
+          "monetizationstart",
+          showMonetizationState
+        );
+        document.monetization.addEventListener(
+          "monetizationpending",
+          showMonetizationState
+        );
+        document.monetization.addEventListener(
+          'monetizationprogress', 
+          showMonetizationState
+        );
+      }
+    
+      // add meta
+      function addMonitizationMetaTag() {
+        if (document.querySelector('meta[name="monetization"]')) return;
+        monetizationTag = document.createElement('meta');
+        monetizationTag.name = 'monetization';
+        monetizationTag.content = '$coil.xrptipbot.com/JABJLDXNSje7h_bY26_6wg'
+        document.head.appendChild(monetizationTag);
+      }
+
+      // remove meta
+      function removeMonitizationMetaTag() {
+        const meta = document.querySelector('meta[name="monetization"]');
+        meta.remove();
+      }
+      
+      const mediaEl = document.querySelectorAll('.mediaEl');
+      mediaEl.forEach(el => {
+        el.addEventListener('play', addMonitizationMetaTag);
+
+        el.addEventListener('playing', addMonitizationMetaTag);
+
+        el.addEventListener('waiting', removeMonitizationMetaTag);
+
+        el.addEventListener('pause', removeMonitizationMetaTag);
+      });
+      
+    })();
+  </script>
+</body>
+</html>
